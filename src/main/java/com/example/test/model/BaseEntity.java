@@ -2,6 +2,7 @@ package com.example.test.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -22,5 +23,8 @@ public abstract class BaseEntity {
 
     @LastModifiedDate
     private LocalDateTime updateDt;
+
+    @CreatedBy
+    private String createdUser;
 
 }
