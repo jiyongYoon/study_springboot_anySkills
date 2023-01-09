@@ -9,7 +9,7 @@ import javax.transaction.Transactional;
 
 @RestController
 @RequiredArgsConstructor
-public class Controller {
+public class UserController {
 
     private final UserService userService;
 
