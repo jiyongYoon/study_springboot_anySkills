@@ -6,6 +6,8 @@ import com.example.test.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.NoSuchElementException;
 
 @Service
@@ -48,6 +50,18 @@ public class UserService {
                 .name(name)
                 .build();
         userQuerydslRepository.updateUser(updateUser);
+    }
+
+    @PostConstruct //빈 초기화 콜백 메서드
+    public void init() {
+        System.out.println("init start.");
+
+    }
+
+    @PreDestroy //빈 소멸전 콜백 메서드
+    public void close() {
+        System.out.println("Bean close.");
+
     }
 
 }
