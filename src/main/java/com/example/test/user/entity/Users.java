@@ -1,5 +1,6 @@
-package com.example.test.model;
+package com.example.test.user.entity;
 
+import com.example.test.model.BaseEntity;
 import lombok.*;
 import org.hibernate.envers.AuditOverride;
 
@@ -15,9 +16,18 @@ import java.util.UUID;
 @AuditOverride(forClass = BaseEntity.class)
 public class Users extends BaseEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     Integer id;
     String name;
+    String password;
+    String role;
     String uuid;
+
+    public Users(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     @PrePersist
     public void printPreTime() {

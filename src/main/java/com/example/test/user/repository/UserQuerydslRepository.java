@@ -1,7 +1,7 @@
-package com.example.test.repository;
+package com.example.test.user.repository;
 
-import com.example.test.model.QUsers;
-import com.example.test.model.Users;
+import com.example.test.user.entity.QUsers;
+import com.example.test.user.entity.Users;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

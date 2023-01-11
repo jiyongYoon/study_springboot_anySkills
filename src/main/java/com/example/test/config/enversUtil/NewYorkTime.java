@@ -1,4 +1,4 @@
-package com.example.test.enversUtil;
+package com.example.test.config.enversUtil;
 
 import lombok.NoArgsConstructor;
 import org.springframework.data.auditing.DateTimeProvider;
