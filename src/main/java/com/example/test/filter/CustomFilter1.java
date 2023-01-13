@@ -7,7 +7,7 @@ import java.io.IOException;
 public class CustomFilter1 implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        System.out.println("1번 필터");
+//        System.out.println("1번 필터 - Filter를 implements한 일반 필터군");
         chain.doFilter(request, response); //필터체인에 추가해줘야 다른 작업이 계속 진행됨
     }
 }
