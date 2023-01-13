@@ -13,61 +13,57 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
+
+import static com.example.test.user.jwt.JwtProperties.*;
 
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
-    private final int JWT_TOKEN_VALID_MILLI_SEC = 1000;
-    private final int SEC = JWT_TOKEN_VALID_MILLI_SEC;
-    private final int MINUTE = 60 * SEC;
-    private final int HOUR = 60 * MINUTE;
-    private final int DAY = 24 * HOUR;
-
-    private long tokenValidTime = 30 * MINUTE;
     @Value("${jwt.secret.key}")
     private String secretKey;
-    private final String ISSUER = "jyyoon";
-    private final String USER_NAME = "USER_NAME";
-    private final String EXPIRED_DATE = "EXPIRED_DATE";
+
     private Algorithm getAlgorithm(String secretKey) {
         return Algorithm.HMAC256(secretKey);
     }
 
     private final UserService userService;
 
-    // JWT 토큰 생성
+    /*
+    JWT 토큰 생성
+     */
     public String generateJwtToken(CustomUserDetails userDetails) {
         Date now = new Date();
 
-        String jwtToken = JWT.create()
+        return JWT.create()
                 .withIssuer(ISSUER)
-                .withClaim(USER_NAME, userDetails.getUser().getName())
-                .withClaim(EXPIRED_DATE, new Date(now.getTime() + tokenValidTime))
+                .withClaim(ENUM_USER_NAME, userDetails.getUser().getName())
+                .withClaim(ENUM_EXPIRED_DATE, new Date(now.getTime() + TOKEN_VALID_TIME))
                 .sign(getAlgorithm(secretKey));
-        System.out.println(new String(Base64.getDecoder().decode(secretKey)));
-        System.out.println(jwtToken);
-
-        return jwtToken;
-    }
-
-    // JWT 토큰의 유저명 가져오기
-    public String getUsernameByJwtToken(String token) throws Exception {
-        DecodedJWT decodedToken = validateToken(token);
-        return decodedToken.getClaim(USER_NAME).asString();
     }
 
     /*
-    인증 성공 시 세션에 Authentication 객체 생성
+    JWT 토큰의 유저명 가져오기
      */
-    public Authentication getAuthentication(String token) throws Exception {
-        CustomUserDetails customUserDetails
-                = (CustomUserDetails) userService.loadUserByUsername(getUsernameByJwtToken(token));
+    public String getUsernameByJwtToken(String token) throws Exception {
+        DecodedJWT decodedToken = validateToken(token);
+        return decodedToken.getClaim(ENUM_USER_NAME).asString();
+    }
 
+    /*
+    인증 성공 시 권한처리를 위해 세션에 Authentication 객체 생성
+     */
+    public Authentication getAuthenticationTokenByUsername(String username) throws Exception {
+        // 유저정보 가져와서
+        CustomUserDetails customUserDetails
+                = (CustomUserDetails) userService.loadUserByUsername(username);
+
+        // AuthenticationManager에 넘겨줄 토큰 리턴
         return new UsernamePasswordAuthenticationToken(
-                customUserDetails,
-                "",
+                customUserDetails, // 나중에 컨트롤러에서 DI해서 쓸 때 사용하기 편해짐
+                null, // 패스워드는 모르니까 null 처리, 어차피 지금 인증하는게 아니니까!!
                 customUserDetails.getAuthorities()
         );
     }
@@ -79,7 +75,7 @@ public class JwtTokenProvider {
      */
     private DecodedJWT validateToken(String token) throws Exception {
         Date now = new Date();
-        Date tokenExpiredDate = JWT.decode(token).getClaim(EXPIRED_DATE).asDate();
+        Date tokenExpiredDate = JWT.decode(token).getClaim(ENUM_EXPIRED_DATE).asDate();
         if (tokenExpiredDate.before(now)) {
             throw new Exception("유효기간이 지난 토큰입니다. 유효기간: " + tokenExpiredDate);
         }
