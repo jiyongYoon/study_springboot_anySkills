@@ -75,10 +75,10 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
+        System.out.println("========== loadUserByUsername 실행됨 ==========");
         Users findUser = userRepository.findByName(username);
 
         if(findUser != null) {
-            System.out.println(findUser.getName() + " 유저정보 존재함");
             return new CustomUserDetails(findUser);
         } else {
             throw new UserNotFoundException(findUser.getName());
