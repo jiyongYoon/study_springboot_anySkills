@@ -13,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
 
@@ -39,7 +38,7 @@ public class JwtTokenProvider {
 
         return JWT.create()
                 .withIssuer(ISSUER)
-                .withClaim(ENUM_USER_NAME, userDetails.getUser().getName())
+                .withClaim(ENUM_USER_NAME, userDetails.getUser().getUsername())
                 .withClaim(ENUM_EXPIRED_DATE, new Date(now.getTime() + TOKEN_VALID_TIME))
                 .sign(getAlgorithm(secretKey));
     }

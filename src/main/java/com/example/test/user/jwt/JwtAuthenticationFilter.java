@@ -3,26 +3,16 @@ package com.example.test.user.jwt;
 import com.example.test.user.entity.Users;
 import com.example.test.user.model.CustomUserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 
 import static com.example.test.user.jwt.JwtProperties.*;
@@ -67,14 +57,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // 1-1. json 데이터를 Users 객체로 파싱
         try {
             loginUser = objectMapper.readValue(request.getInputStream(), Users.class);
-            System.out.println(loginUser.getName() + ", " + loginUser.getPassword());
+            System.out.println(loginUser.getUsername() + ", " + loginUser.getPassword());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         // 1-2. Users 데이터로 인증객체(Token) 생성
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginUser.getName(), loginUser.getPassword());
+                new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword());
 
         // 1-3. AuthenticationManager에게 토큰을 넘겨서 인증 진행(UserDetailsService의 loadUserByUsername() 실행됨)
         Authentication authentication =authenticationManager.authenticate(authenticationToken);

@@ -24,8 +24,8 @@ public class LoginController {
 
     @PostMapping("/join")
     public String join(Users user) {
-        System.out.println("회원가입: " + user.getName() + " , " + user.getPassword());
-        userService.addUser(user.getName(), user.getPassword());
+        System.out.println("회원가입: " + user.getUsername() + " , " + user.getPassword());
+        userService.addUser(user.getUsername(), user.getPassword());
         return "redirect:/loginForm";
     }
 }

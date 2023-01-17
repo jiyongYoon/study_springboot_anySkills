@@ -17,16 +17,15 @@ import java.util.UUID;
 public class Users extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    Integer id;
-    String name;
+    Integer userId;
+    String username;
     String password;
     String role;
     String uuid;
 
     public Users(Integer id, String name) {
-        this.id = id;
-        this.name = name;
+        this.userId = id;
+        this.username = name;
     }
 
     @PrePersist

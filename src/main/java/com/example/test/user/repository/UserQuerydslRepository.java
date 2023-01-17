@@ -20,20 +20,20 @@ public class UserQuerydslRepository {
     public Users getUser(Integer id) {
         return queryFactory
                 .select(Projections.constructor(Users.class,
-                        user.id,
-                        user.name
+                        user.userId,
+                        user.username
                         )
                 )
                 .from(user)
-                .where(user.id.eq(id))
+                .where(user.userId.eq(id))
                 .fetchOne();
     }
 
     public void updateUser(Users updateUser) {
         queryFactory
                 .update(user)
-                .where(user.id.eq(updateUser.getId()))
-                .set(user.name, updateUser.getName())
+                .where(user.userId.eq(updateUser.getUserId()))
+                .set(user.username, updateUser.getUsername())
                 .set(user.updateDt, LocalDateTime.now())
                 .execute();
     }

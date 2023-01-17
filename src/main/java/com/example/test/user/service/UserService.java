@@ -30,7 +30,7 @@ public class UserService implements UserDetailsService {
 
     public Users addUser(String name, String password) {
         Users addUser = Users.builder()
-                .name(name)
+                .username(name)
                 .password(bCryptPasswordEncoder.encode(password))
                 .role("ROLE_USER")
                 .build();
@@ -40,8 +40,8 @@ public class UserService implements UserDetailsService {
 
     public Users updateUserName(Users user, String name) {
         Users updateUser = Users.builder()
-                .id(user.getId())
-                .name(name)
+                .userId(user.getUserId())
+                .username(name)
                 .password(user.getPassword())
                 .build();
         userRepository.save(updateUser);
@@ -54,8 +54,8 @@ public class UserService implements UserDetailsService {
 
     public void updateUserNameByDsl(Users user, String name) {
         Users updateUser = Users.builder()
-                .id(user.getId())
-                .name(name)
+                .userId(user.getUserId())
+                .username(name)
                 .password(user.getPassword())
                 .build();
         userQuerydslRepository.updateUser(updateUser);
@@ -76,12 +76,12 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         System.out.println("========== loadUserByUsername 실행됨 ==========");
-        Users findUser = userRepository.findByName(username);
+        Users findUser = userRepository.findByUsername(username);
 
         if(findUser != null) {
             return new CustomUserDetails(findUser);
         } else {
-            throw new UserNotFoundException(findUser.getName());
+            throw new UserNotFoundException(findUser.getUsername());
         }
     }
 }

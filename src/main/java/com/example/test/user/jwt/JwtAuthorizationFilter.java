@@ -51,7 +51,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // 3. 권한처리를 위해 Authentication 객체를 받아와서 세션에 저장
+        // 3. 권한처리를 위해 Authentication 객체를 받아와서 세션에 저장 // ROLE_USER와 같은 것
+        // 매번 저장하기 때문에 서버가 나뉘어있어도 상관이 없음
         try {
             Authentication authenticationToken = jwtTokenProvider.getAuthenticationTokenByUsername(username);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken); // 세션에 저장
