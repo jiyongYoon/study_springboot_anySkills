@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SSE test</title>
+</head>
+<body>
+<script>
+  const eventSource = new EventSource("http://localhost:8080/sse-test");
+  eventSource.onmessage = event => {
+    console.log(event.data);
+  };
+
+  eventSource.onerror = error => {
+    eventSource.close();
+  };
+</script>
+</body>
+</html>

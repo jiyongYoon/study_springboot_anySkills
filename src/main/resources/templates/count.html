@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Count</title>
+</head>
+<body>
+<h1>Count</h1>
+
+<script>
+  const sse = new EventSource("http://localhost:8080/count");
+
+  sse.addEventListener('count', (e) => {
+    const { data : recievedCountData } = e;
+    console.log('count event data: ', recievedCountData);
+  })
+</script>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Connect</title>
+</head>
+<body>
+Connect
+<script>
+  const sse = new EventSource("http://localhost:8080/connect");
+
+  sse.addEventListener('connect', (e) => {
+    const { data : recievedCountData } = e;
+    console.log('connect event data: ', recievedCountData);
+  })
+</script>
+</body>
+</html>

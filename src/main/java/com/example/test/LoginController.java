@@ -1,11 +1,19 @@
 package com.example.test;
 
+import com.example.test.component.sse.SseEmitters;
 import com.example.test.user.entity.Users;
+import com.example.test.user.model.CustomUserDetails;
 import com.example.test.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor

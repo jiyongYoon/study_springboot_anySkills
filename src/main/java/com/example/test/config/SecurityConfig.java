@@ -39,7 +39,7 @@ public class SecurityConfig {
         /*
         formLogin 사용 시 설정
          */
-        /*
+
         http.authorizeRequests()
                 .antMatchers("/user/**")
                     .authenticated()
@@ -50,11 +50,12 @@ public class SecurityConfig {
                     .loginPage("/loginForm")
                     .loginProcessingUrl("/login")
                     .defaultSuccessUrl("/");
-         */
+
 
         /*
         JWT 토큰 사용 시 설정
          */
+        /*
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                         .formLogin().disable()
@@ -70,6 +71,7 @@ public class SecurityConfig {
         http.addFilterBefore(
                 new CustomFilter3(), UsernamePasswordAuthenticationFilter.class
         );
+         */
 
         return http.build();
     }
