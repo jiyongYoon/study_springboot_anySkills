@@ -30,8 +30,6 @@ public class SseEmitters {
         return emitter;
     }
 
-
-
     public void count() {
         long count = counter.incrementAndGet();
         emitters.forEach(emitter -> {

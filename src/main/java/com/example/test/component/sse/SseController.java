@@ -15,6 +15,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +25,8 @@ public class SseController {
     private final SseEmitters sseEmitters;
     private final NotificationService notificationService;
     private final UserRepository userRepository;
+
+    public List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     /*
     직접 message를 작성하여 보내는 메서드
@@ -61,8 +65,20 @@ public class SseController {
             e.printStackTrace();
         }
 
-
         return ResponseEntity.ok(emitter);
+    }
+
+    @PostMapping(value = "/dispatchEvent", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public void dispatchEventToClients (@RequestParam String contents) {
+        for (SseEmitter emitter : emitters) {
+            try {
+                emitter.send(SseEmitter.event()
+                        .name("new_contents")
+                        .data(contents));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @GetMapping("/count")
