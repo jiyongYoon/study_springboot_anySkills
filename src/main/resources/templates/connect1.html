@@ -7,11 +7,11 @@
 <body>
 Connect
 <script>
-  const sse = new EventSource("http://localhost:8080/connect");
+  const sse = new EventSource("http://localhost:8080/connect1");
 
-  sse.addEventListener('connect', (e) => {
+  sse.addEventListener('count1', (e) => {
     const { data : recievedCountData } = e;
-    console.log('connect event data: ', recievedCountData);
+    console.log('count1 event data: ', recievedCountData);
   })
 </script>
 </body>

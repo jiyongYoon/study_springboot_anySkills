@@ -1,6 +1,5 @@
 package com.example.test.component.sse;
 
-import com.example.test.notification.service.NotificationService;
 import com.example.test.user.entity.Users;
 import com.example.test.user.model.CustomUserDetails;
 import com.example.test.user.repository.UserRepository;
@@ -16,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @RestController
@@ -23,7 +24,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SseController {
 
     private final SseEmitters sseEmitters;
-    private final NotificationService notificationService;
     private final UserRepository userRepository;
 
     public List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
@@ -53,14 +53,29 @@ public class SseController {
     /*
     java의 SseEmitter를 사용하여 메시지를 보내는 메서드
      */
-    @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> connect() {
-        SseEmitter emitter = new SseEmitter(); // 기본 30초
-        sseEmitters.add(emitter); // SseEmitter 객체를 서버에 저장 -> 추후 이벤트 발생 시 클라이언트에게 전송을 위해
+    @GetMapping(value = "/connect1", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public ResponseEntity<SseEmitter> connect1(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        SseEmitter emitter = new SseEmitter(5 * 1000L); // 기본 30초
+        sseEmitters.add(emitter, 1L); // SseEmitter 객체를 서버에 저장 -> 추후 이벤트 발생 시 클라이언트에게 전송을 위해
         try {
             emitter.send(SseEmitter.event() // SseEmitter 클래스의 빌더메서드
-                    .name("connect")
-                    .data("connected!"));
+                    .name("connect1")
+                    .data(customUserDetails.getUser().getUserId() + " connected!"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.ok(emitter);
+    }
+
+    @GetMapping(value = "/connect2", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public ResponseEntity<SseEmitter> connect2(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        SseEmitter emitter = new SseEmitter(600 * 1000L); // 기본 30초
+        sseEmitters.add(emitter, 2L); // SseEmitter 객체를 서버에 저장 -> 추후 이벤트 발생 시 클라이언트에게 전송을 위해
+        try {
+            emitter.send(SseEmitter.event() // SseEmitter 클래스의 빌더메서드
+                    .name("connect2")
+                    .data(customUserDetails.getUser().getUserId() + " connected!"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -81,25 +96,22 @@ public class SseController {
         }
     }
 
-    @GetMapping("/count")
-    public ResponseEntity<Void> count() {
-        sseEmitters.count();
+    @GetMapping("/count/{emitterId}")
+    public ResponseEntity<Void> count(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                      @PathVariable Long emitterId) {
+        sseEmitters.count(emitterId, customUserDetails.getUser().getUserId());
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public SseEmitter subscribe(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
-        return notificationService.subscribe(customUserDetails.getUser().getUserId(), lastEventId);
+    @GetMapping("/count1")
+    public ResponseEntity<Void> count1(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        sseEmitters.count1(customUserDetails.getUser().getUserId());
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/send", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public String send(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Users users = userRepository.findByUsername(customUserDetails.getUsername());
-        String contents = "안녕하세용";
-        notificationService.send(users, contents);
-        return users.getUsername() + "에게 보냄. contents=" + contents;
+    @GetMapping("/count2")
+    public ResponseEntity<Void> count2(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        sseEmitters.count2(customUserDetails.getUser().getUserId());
+        return ResponseEntity.ok().build();
     }
 }

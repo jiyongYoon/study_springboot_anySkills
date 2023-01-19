@@ -1,9 +1,9 @@
 package com.example.test.notification.model;
 
 import com.example.test.model.BaseEntity;
-import com.example.test.user.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -12,18 +12,18 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class Notification extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long notificationId;
+    Long notificationId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    Users reciever;
+    Long emitterId;
+    Integer senderId;
 
     String contents;
 
-    boolean isRead;
+    Boolean isRead;
 
 }
