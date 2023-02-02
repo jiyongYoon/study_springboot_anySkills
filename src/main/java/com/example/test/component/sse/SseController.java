@@ -51,7 +51,7 @@ public class SseController {
     }
 
     /*
-    java의 SseEmitter를 사용하여 메시지를 보내는 메서드
+    java의 SseEmitter를 사용하여 EventStream을 여는 메서드
      */
     @GetMapping(value = "/connect1", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> connect1(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -64,7 +64,6 @@ public class SseController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return ResponseEntity.ok(emitter);
     }
 
