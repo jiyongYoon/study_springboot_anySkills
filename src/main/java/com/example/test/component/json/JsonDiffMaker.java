@@ -49,5 +49,4 @@ public class JsonDiffMaker {
     private MapDifference<String, Object> getDifferenceMap(Map m1, Map m2) {
         return Maps.difference(m1, m2);
     }
-
 }
