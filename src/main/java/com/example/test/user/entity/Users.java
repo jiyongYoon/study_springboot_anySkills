@@ -1,29 +1,38 @@
 package com.example.test.user.entity;
 
-import com.example.test.model.BaseEntity;
+import com.example.test.model.Team;
+import com.example.test.model.TimeStamp;
+import com.example.test.model.UserStamp;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.envers.AuditOverride;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.UUID;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Entity
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@AuditOverride(forClass = BaseEntity.class)
-public class Users extends BaseEntity {
+//@AuditOverride(forClass = TimeStamp.class)
+public class Users /*extends TimeStamp*/ implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer userId;
-    String username;
-    String password;
-    String role;
-    String uuid;
+    private Long userId;
+    private String username;
+    private String password;
+    private String role;
+    private String uuid;
 
-    public Users(Integer id, String name) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
+
+    public Users(Long id, String name) {
         this.userId = id;
         this.username = name;
     }

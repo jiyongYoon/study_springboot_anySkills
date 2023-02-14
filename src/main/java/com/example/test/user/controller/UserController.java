@@ -1,5 +1,7 @@
 package com.example.test.user.controller;
 
+import com.example.test.model.Team;
+import com.example.test.service.dto.UserDto;
 import com.example.test.user.entity.Users;
 import com.example.test.user.model.CustomUserDetails;
 import com.example.test.user.service.UserService;
@@ -8,15 +10,42 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
 
+    @GetMapping
+    public List<UserDto> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
+    @GetMapping("/{id}")
+    public UserDto getUsers(@PathVariable Long id) {
+        return userService.getUsers(id);
+    }
+
+    @PostMapping
+    public UserDto createUsers(@RequestBody Users users) {
+        return userService.createUsers(users);
+    }
+
+    @PutMapping("/{id}")
+    public UserDto updateUsers(@PathVariable Long id, @RequestBody Users users) {
+        return userService.updateUsers(id, users);
+    }
+
+    @DeleteMapping("/{id}")
+    public UserDto deleteUsers(@PathVariable Long id) {
+        return userService.deleteUsers(id);
+    }
+
     @GetMapping("/info")
-    public String printInfo(@RequestParam Integer id) {
+    public String printInfo(@RequestParam Long id) {
         Users user = userService.getUser(id);
 
         String res = "id = " + id + ", name = " + user.getUsername();
@@ -31,7 +60,7 @@ public class UserController {
     }
 
     @PutMapping("/user")
-    public String changeName(@RequestParam Integer id,
+    public String changeName(@RequestParam Long id,
                              @RequestBody String name) {
         Users user = userService.getUser(id);
         String beforeName = user.getUsername();
@@ -42,7 +71,7 @@ public class UserController {
     }
 
     @GetMapping("/info/dsl")
-    public String printInfoByDsl(@RequestParam Integer id) {
+    public String printInfoByDsl(@RequestParam Long id) {
         Users user = userService.getUserByDsl(id);
 
         String res = "id = " + id + ", name = " + user.getUsername();
@@ -53,7 +82,7 @@ public class UserController {
 
     @Transactional
     @PutMapping("/user/dsl")
-    public String changeNameByDsl(@RequestParam Integer id,
+    public String changeNameByDsl(@RequestParam Long id,
                                   @RequestBody String name) {
         Users user = userService.getUserByDsl(id);
         String beforeName = user.getUsername();

@@ -17,7 +17,7 @@ public class UserQuerydslRepository {
     QUsers user = new QUsers("U");
 
 
-    public Users getUser(Integer id) {
+    public Users getUser(Long id) {
         return queryFactory
                 .select(Projections.constructor(Users.class,
                         user.userId,
@@ -34,7 +34,6 @@ public class UserQuerydslRepository {
                 .update(user)
                 .where(user.userId.eq(updateUser.getUserId()))
                 .set(user.username, updateUser.getUsername())
-                .set(user.updateDt, LocalDateTime.now())
                 .execute();
     }
 }

@@ -2,10 +2,13 @@ package com.example.test;
 
 import com.example.test.jsonmodel.Contract;
 import com.example.test.jsonmodel.JsonDto;
+import com.example.test.notification.repository.MemberRepository;
+import com.example.test.user.entity.Member;
 import com.example.test.user.entity.Users;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flipkart.zjsonpatch.JsonDiff;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
@@ -20,11 +23,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.slf4j.MDC.clear;
+
 @SpringBootTest
 class TestApplicationTests {
 
     @Autowired
     private ApplicationContext applicationContext;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Test
     @DisplayName("빈 이름 확인")
@@ -41,10 +49,10 @@ class TestApplicationTests {
     @Test
     @DisplayName("json 직렬화 및 역직렬화")
     void fromJson() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());;
 
         Users user = Users.builder()
-                .userId(1)
+                .userId(1L)
                 .username("첫째")
                 .role("ROLE_USER")
                 .build();
@@ -58,13 +66,13 @@ class TestApplicationTests {
     @DisplayName("JsonDiff")
     void jsonDiff() {
         Users user1 = Users.builder()
-                .userId(1)
+                .userId(1L)
                 .username("윤지용")
                 .role("사원")
                 .build();
 
         Users user2 = Users.builder()
-                .userId(2)
+                .userId(2L)
                 .username("홍길동")
                 .role("대리")
                 .build();
@@ -84,7 +92,7 @@ class TestApplicationTests {
 //                .createDate(LocalDate.of(2023, 2, 5))
                 .build();
 
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());;
         JsonNode diffNode = JsonDiff.asJson(
                 mapper.valueToTree(originalContract),
                 mapper.valueToTree(newContract)
@@ -119,5 +127,17 @@ class TestApplicationTests {
         System.out.println(s);
         System.out.println("==========================================");
 
+    }
+
+    @Test
+    void uniqueEmailTest() {
+        //given
+        Member member = new Member();
+        Member member1 = memberRepository.save(member.createMember("email", "password"));
+        clear();
+
+        Member member2 = memberRepository.save(member.createMember(member1.getEmail(), "password2"));
+        System.out.println(member1.getEmail());
+        System.out.println(member2.getEmail());
     }
 }

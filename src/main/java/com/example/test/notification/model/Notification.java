@@ -1,6 +1,6 @@
 package com.example.test.notification.model;
 
-import com.example.test.model.BaseEntity;
+import com.example.test.model.UserStamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,14 +13,14 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Notification extends BaseEntity {
+public class Notification extends UserStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long notificationId;
 
     Long emitterId;
-    Integer senderId;
+    Long senderId;
 
     String contents;
 

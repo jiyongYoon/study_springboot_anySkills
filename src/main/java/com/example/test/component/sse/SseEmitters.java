@@ -61,7 +61,7 @@ public class SseEmitters {
         return emitter;
     }
 
-    public void count(Long emitterId, Integer senderId) {
+    public void count(Long emitterId, Long senderId) {
         long count = counter.incrementAndGet();
         Notification noti = Notification.builder()
                 .emitterId(emitterId)
@@ -81,7 +81,7 @@ public class SseEmitters {
         });
     }
 
-    public void count1(Integer senderId) {
+    public void count1(Long senderId) {
         long count = counter1.incrementAndGet();
         Notification noti = Notification.builder()
                 .senderId(senderId)
@@ -119,7 +119,7 @@ public class SseEmitters {
          */
     }
 
-    public void count2(Integer senderId) {
+    public void count2(Long senderId) {
         long count = counter2.incrementAndGet();
         Notification noti = Notification.builder()
                 .senderId(senderId)

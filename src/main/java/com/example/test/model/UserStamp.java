@@ -1,5 +1,6 @@
 package com.example.test.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
@@ -10,20 +11,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
 import java.time.LocalDateTime;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Getter
 @Setter
 @MappedSuperclass
 @EntityListeners(value = {AuditingEntityListener.class})
-public abstract class BaseEntity {
-
-    @CreatedDate
-    private LocalDateTime regDt;
-
-    @LastModifiedDate
-    private LocalDateTime updateDt;
+public abstract class UserStamp extends TimeStamp {
 
     @CreatedBy
     private String createdUser;
