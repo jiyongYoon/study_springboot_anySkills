@@ -2,7 +2,10 @@ package com.example.test;
 
 import com.example.test.jsonmodel.Contract;
 import com.example.test.jsonmodel.JsonDto;
+import com.example.test.model.Sports;
+import com.example.test.model.Team;
 import com.example.test.notification.repository.MemberRepository;
+import com.example.test.repository.TeamRepository;
 import com.example.test.user.entity.Member;
 import com.example.test.user.entity.Users;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,10 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.slf4j.MDC.clear;
 
@@ -139,5 +145,64 @@ class TestApplicationTests {
         Member member2 = memberRepository.save(member.createMember(member1.getEmail(), "password2"));
         System.out.println(member1.getEmail());
         System.out.println(member2.getEmail());
+    }
+
+    @Test
+    void ArrayTest() {
+        Member member = Member.builder()
+                .userId(1L)
+                .email("test@email.com")
+                .password("123")
+                .build();
+
+        List<Long> testList = Arrays.asList(member.getUserId());
+        System.out.println(testList);
+        System.out.println(testList.size());
+    }
+
+    @Test
+    void mapTest() {
+        Map<Long, Member> longMemberMap = new ConcurrentHashMap<>();
+        Member member1 = Member.builder()
+                .userId(1L)
+                .email("111@email.com")
+                .password("123")
+                .build();
+        Member member2 = Member.builder()
+                .userId(2L)
+                .email("222@email.com")
+                .password("123")
+                .build();
+        longMemberMap.put(1L, member1);
+        longMemberMap.put(2L, member2);
+
+        Member findMember = new Member();
+        if(longMemberMap.containsKey(1L)) {
+            findMember = longMemberMap.get(1L);
+            longMemberMap.remove(1L);
+        }
+        System.out.println("--------------------------");
+//        System.out.println(findMember != null ? findMember.getUserId() : "빈 맴버");
+        for (Map.Entry<Long, Member> longMemberEntry : longMemberMap.entrySet()) {
+            System.out.println(longMemberEntry.getValue().getUserId());
+        }
+        System.out.println(longMemberMap.isEmpty());
+        System.out.println("--------------------------");
+
+        if(longMemberMap.containsKey(2L)) {
+            longMemberMap.remove(2L);
+        }
+
+        for (Map.Entry<Long, Member> longMemberEntry : longMemberMap.entrySet()) {
+            System.out.println(longMemberEntry.getValue().getUserId());
+        }
+        System.out.println(longMemberMap.isEmpty());
+        System.out.println("--------------------------");
+
+        for (Map.Entry<Long, Member> longMemberEntry : longMemberMap.entrySet()) {
+            System.out.println(longMemberEntry.getValue().getUserId());
+        }
+        System.out.println("--------------------------");
+
     }
 }

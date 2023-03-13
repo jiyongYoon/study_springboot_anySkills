@@ -2,7 +2,6 @@ package com.example.test.service.dto;
 
 import com.example.test.model.Sports;
 import com.example.test.model.Team;
-import com.example.test.user.entity.Users;
 import lombok.*;
 
 @Getter

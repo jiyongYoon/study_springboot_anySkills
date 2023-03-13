@@ -11,6 +11,9 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +26,6 @@ public class Member {
     public Member(String email, String password) {
         this.email = email;
         this.password = password;
-    }
-
-    public Member() {
-
     }
 
     public Member createMember(String email, String password) {

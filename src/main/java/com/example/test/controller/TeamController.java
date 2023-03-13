@@ -21,9 +21,19 @@ public class TeamController {
         return teamService.getAllTeams();
     }
 
+    @GetMapping("/fetch")
+    public List<TeamDto> getAllTeamsFetch() {
+        return teamService.getAllTeamsFetch();
+    }
+
     @GetMapping("/{id}")
     public TeamDto getTeam(@PathVariable Long id) {
         return teamService.getTeam(id);
+    }
+
+    @GetMapping("/fetch/{id}")
+    public TeamDto getTeamFetch(@PathVariable Long id) {
+        return teamService.getTeamFetch(id);
     }
 
     @PostMapping
@@ -32,12 +42,17 @@ public class TeamController {
     }
 
     @PutMapping("/{id}")
-    public TeamDto updateTeam(@PathVariable Long id, @RequestBody Team team) {
+    public TeamDto updateTeam(@PathVariable Long id, @RequestBody TeamDto team) {
         return teamService.updateTeam(id, team);
     }
 
     @DeleteMapping("/{id}")
     public TeamDto deleteTeam(@PathVariable Long id) {
         return teamService.deleteTeam(id);
+    }
+
+    @GetMapping("/prePersist")
+    public void prePersist() {
+        teamService.prePersist();
     }
 }

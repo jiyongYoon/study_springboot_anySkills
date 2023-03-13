@@ -1,6 +1,7 @@
 package com.example.test.user.service;
 
 import com.example.test.service.dto.UserDto;
+import com.example.test.service.dto.UserResponseDto;
 import com.example.test.user.entity.Users;
 import com.example.test.user.exception.UserNotFoundException;
 import com.example.test.user.model.CustomUserDetails;
@@ -98,6 +99,14 @@ public class UserService implements UserDetailsService {
 
     public UserDto getUsers(Long id) {
         return UserDto.toDto(userRepository.findById(id).orElseThrow(RuntimeException::new));
+    }
+
+    public UserResponseDto getUserRes(Long id) {
+        return UserResponseDto.toDto(getUsers(id));
+    }
+
+    public UserDto getUserFetch(Long id) {
+        return UserDto.toDto(userRepository.findByIdFetch(id).orElseThrow(RuntimeException::new));
     }
 
 

@@ -1,11 +1,9 @@
 package com.example.test.user.entity;
 
 import com.example.test.model.Team;
-import com.example.test.model.TimeStamp;
-import com.example.test.model.UserStamp;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-import org.hibernate.envers.AuditOverride;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -30,6 +28,7 @@ public class Users /*extends TimeStamp*/ implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
+    @JsonIgnore
     private Team team;
 
     public Users(Long id, String name) {

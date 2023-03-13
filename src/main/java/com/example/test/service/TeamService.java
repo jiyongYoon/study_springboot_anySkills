@@ -1,5 +1,6 @@
 package com.example.test.service;
 
+import com.example.test.model.Sports;
 import com.example.test.model.Team;
 import com.example.test.repository.SportsRepository;
 import com.example.test.repository.TeamRepository;
@@ -19,6 +20,7 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final SportsRepository sportsRepository;
 
+    @Transactional
     public List<TeamDto> getAllTeams() {
 //        List<Team> teamList = teamRepository.findAll();
 //        List<TeamDto> teamDtoList = new ArrayList<>();
@@ -34,10 +36,22 @@ public class TeamService {
                 .map(TeamDto::toDto)
                 .collect(Collectors.toList());
     }
+    @Transactional
+    public List<TeamDto> getAllTeamsFetch() {
+        return teamRepository.findAllFetch().stream()
+                .map(TeamDto::toDto)
+                .collect(Collectors.toList());
+    }
 
     @Transactional
     public TeamDto getTeam(Long id) {
+
         return TeamDto.toDto(teamRepository.findById(id).orElseThrow(RuntimeException::new));
+    }
+
+    @Transactional
+    public TeamDto getTeamFetch(Long id) {
+        return TeamDto.toDto(teamRepository.findByIdFetch(id).orElseThrow(RuntimeException::new));
     }
 
     public TeamDto createTeam(Team team) {
@@ -45,12 +59,13 @@ public class TeamService {
     }
 
     @Transactional
-    public TeamDto updateTeam(Long id, Team team) {
+    public TeamDto updateTeam(Long id, TeamDto team) {
+        Sports findSports = sportsRepository.findById(team.getSports().getSportsId())
+                .orElseThrow(RuntimeException::new);
         Team findTeam = teamRepository.findById(id)
                 .orElseThrow(RuntimeException::new);
         findTeam.setTeamName(team.getTeamName());
-        findTeam.setSports(sportsRepository.findById(team.getSports().getSportsId())
-                .orElseThrow(RuntimeException::new));
+        findTeam.setSports(findSports);
         return TeamDto.toDto(teamRepository.save(findTeam));
     }
 
@@ -59,5 +74,30 @@ public class TeamService {
                 .orElseThrow(RuntimeException::new);
         teamRepository.delete(findTeam);
         return TeamDto.toDto(findTeam);
+    }
+
+    public void prePersist() {
+        Team teamA = new Team();
+        Team teamB = Team.builder()
+                .teamName("엄청난 팀")
+                .build();
+
+        teamA = teamRepository.saveAndFlush(teamA);
+        teamB = teamRepository.saveAndFlush(teamB);
+
+        System.out.println("------팀 저장 후 첫 출력------");
+        System.out.println(teamA.getTeamName());
+        System.out.println(teamB.getTeamName());
+
+        teamA.setTeamName("팀A 이름 수정");
+        teamB.setTeamName("팀B 이름 수정");
+
+        teamA = teamRepository.saveAndFlush(teamA);
+        teamB = teamRepository.saveAndFlush(teamB);
+
+        System.out.println("------팀 이름 수정 후 출력------");
+        System.out.println(teamA.getTeamName());
+        System.out.println(teamB.getTeamName());
+
     }
 }

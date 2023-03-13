@@ -2,6 +2,7 @@ package com.example.test.user.controller;
 
 import com.example.test.model.Team;
 import com.example.test.service.dto.UserDto;
+import com.example.test.service.dto.UserResponseDto;
 import com.example.test.user.entity.Users;
 import com.example.test.user.model.CustomUserDetails;
 import com.example.test.user.service.UserService;
@@ -27,6 +28,16 @@ public class UserController {
     @GetMapping("/{id}")
     public UserDto getUsers(@PathVariable Long id) {
         return userService.getUsers(id);
+    }
+
+    @GetMapping("/fetch/{id}")
+    public UserDto getUsersFetch(@PathVariable Long id) {
+        return userService.getUserFetch(id);
+    }
+
+    @GetMapping("/resDto/{id}")
+    public UserResponseDto getUsersRes(@PathVariable Long id) {
+        return userService.getUserRes(id);
     }
 
     @PostMapping
