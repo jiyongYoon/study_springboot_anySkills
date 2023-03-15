@@ -15,8 +15,8 @@ public class SportsDto {
 
     public static SportsDto toDto(Sports sports) {
         return SportsDto.builder()
-//                .sportsId(sports.getSportsId())
-//                .sportsName(sports.getSportsName())
+                .sportsId(sports.getSportsId())
+                .sportsName(sports.getSportsName())
                 .build();
     }
 }

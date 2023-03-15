@@ -5,6 +5,10 @@ import static org.slf4j.MDC.clear;
 import com.example.test.jsonmodel.Contract;
 import com.example.test.jsonmodel.TestClass;
 import com.example.test.notification.repository.MemberRepository;
+import com.example.test.repository.SportsRepository;
+import com.example.test.repository.TeamRepository;
+import com.example.test.service.dto.SportsDto;
+import com.example.test.service.dto.mapper.SportsDtoMapper;
 import com.example.test.user.entity.Member;
 import com.example.test.user.entity.Users;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,6 +18,14 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flipkart.zjsonpatch.JsonDiff;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+
+import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +40,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.slf4j.MDC.clear;
 
 @SpringBootTest
 class TestApplicationTests {
@@ -75,6 +90,9 @@ class TestApplicationTests {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private SportsRepository sportsRepository;
 
     @Test
     @DisplayName("빈 이름 확인")
@@ -297,5 +315,28 @@ class TestApplicationTests {
         }
         System.out.println("--------------------------");
 
+    }
+
+    @Test
+    @DisplayName("MapStruct 사용한 SportsDto 매핑")
+    public void mapStructTest() {
+        // given
+        Sports sports = Sports.builder()
+                .sportsName("스포츠명")
+                .build();
+        Sports savedSports = sportsRepository.save(sports);
+
+        // when
+        Sports findSports = sportsRepository.findById(savedSports.getSportsId())
+                .orElseThrow(RuntimeException::new);
+
+        SportsDto findSportsDto = SportsDtoMapper.instance.toDto(findSports);
+
+        // then
+        System.out.println("엔티티명: " + sports.getSportsName());
+        System.out.println("저장한 엔티티명: " + savedSports.getSportsName());
+        System.out.println("찾은 엔티티명: " + findSports.getSportsName());
+        System.out.println("찾은 Dto명: " + findSportsDto.getSportsName());
+        assertEquals(findSportsDto.getSportsName(), sports.getSportsName());
     }
 }
