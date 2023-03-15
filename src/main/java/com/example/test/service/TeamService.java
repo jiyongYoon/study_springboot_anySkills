@@ -5,11 +5,13 @@ import com.example.test.model.Team;
 import com.example.test.repository.SportsRepository;
 import com.example.test.repository.TeamRepository;
 import com.example.test.service.dto.TeamDto;
+import com.example.test.service.dto.mapper.TeamDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +45,12 @@ public class TeamService {
                 .collect(Collectors.toList());
     }
 
+    public List<TeamDto> getAllTeamsSameSports(Long teamId) {
+        Sports sports = teamRepository.findById(teamId).get().getSports();
+        List<Team> teamList = sportsRepository.findById(sports.getSportsId()).get().getTeamList();
+        return TeamDtoMapper.instance.toDtoList(teamList);
+    }
+
     @Transactional
     public TeamDto getTeam(Long id) {
 
@@ -60,7 +68,7 @@ public class TeamService {
 
     @Transactional
     public TeamDto updateTeam(Long id, TeamDto team) {
-        Sports findSports = sportsRepository.findById(team.getSports().getSportsId())
+        Sports findSports = sportsRepository.findById(team.getSportsDto().getSportsId())
                 .orElseThrow(RuntimeException::new);
         Team findTeam = teamRepository.findById(id)
                 .orElseThrow(RuntimeException::new);

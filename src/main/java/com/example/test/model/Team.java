@@ -39,15 +39,16 @@ public class Team /*extends UserStamp*/ implements Serializable {
     @ColumnDefault("'팀 설명 없음'")
     private String teamDescription;
 
-    private String a;
-    private String b;
-    private String c;
-
     @PrePersist
     private void prePersist() {
         this.teamName = this.teamName == null ? "팀 이름 없이 등록됨" : this.teamName;
     }
 
+    public void setSports(Sports sports) {
+        this.sports = sports;
+        sports.getTeamList().add(this);
+        System.out.println("setSports 메서드 동작");
+    }
 //    @PreUpdate
 //    private void preUpdate() {
 //        this.teamName = this.teamName == null ? "팀 이름 없이 수정됨" : this.teamName;

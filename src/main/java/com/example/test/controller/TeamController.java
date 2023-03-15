@@ -26,6 +26,11 @@ public class TeamController {
         return teamService.getAllTeamsFetch();
     }
 
+    @GetMapping("/getSameSports/{id}")
+    public List<TeamDto> getAllTeamsSameSports(@PathVariable Long id) {
+        return teamService.getAllTeamsSameSports(id);
+    }
+
     @GetMapping("/{id}")
     public TeamDto getTeam(@PathVariable Long id) {
         return teamService.getTeam(id);

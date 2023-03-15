@@ -2,6 +2,7 @@ package com.example.test.service.dto;
 
 import com.example.test.model.Sports;
 import com.example.test.model.Team;
+import com.example.test.service.dto.mapper.SportsDtoMapper;
 import lombok.*;
 
 @Getter
@@ -12,13 +13,13 @@ import lombok.*;
 public class TeamDto {
     private Long teamId;
     private String teamName;
-    private Sports sports;
+    private SportsDto sportsDto;
 
     public static TeamDto toDto(Team team) {
         return TeamDto.builder()
                 .teamId(team.getTeamId())
                 .teamName(team.getTeamName())
-                .sports(team.getSports())
+                .sportsDto(SportsDtoMapper.instance.toDto(team.getSports()))
                 .build();
     }
 }
