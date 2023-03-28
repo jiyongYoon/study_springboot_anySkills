@@ -1,11 +1,10 @@
 package com.example.test;
 
+import static org.slf4j.MDC.clear;
+
 import com.example.test.jsonmodel.Contract;
-import com.example.test.jsonmodel.JsonDto;
-import com.example.test.model.Sports;
-import com.example.test.model.Team;
+import com.example.test.jsonmodel.TestClass;
 import com.example.test.notification.repository.MemberRepository;
-import com.example.test.repository.TeamRepository;
 import com.example.test.user.entity.Member;
 import com.example.test.user.entity.Users;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,24 +14,61 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flipkart.zjsonpatch.JsonDiff;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
-import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static org.slf4j.MDC.clear;
-
 @SpringBootTest
 class TestApplicationTests {
+
+    class JsonConverter {
+        JSONObject toJson(ArrayList<String> keys, ArrayList<Object> values) throws JSONException {
+            JSONObject jsonObject = new JSONObject();
+
+            for (int i = 0; i < keys.size(); i++) {
+                String key = keys.get(i);
+                Object value = values.get(i);
+                jsonObject.put(key, toJsonValue(value));
+            }
+
+            return jsonObject;
+        }
+
+        Object toJsonValue(Object value) throws JSONException {
+            if (value == null) {
+                return "null";
+            }
+
+            if (value instanceof Map) {
+                JSONObject jo = new JSONObject();
+                Set<? extends Entry<?, ?>> entries = ((Map<?, ?>) value).entrySet();
+                for (Entry<?, ?> entry : entries) {
+                    if (entry.getValue() instanceof Map) {
+                        jo.put(entry.getKey().toString(), toJsonValue(entry.getValue()));
+                    } else {
+                        if (entry.getValue() != null) {
+                            jo.put(entry.getKey().toString(), entry.getValue());
+                        } else {
+                            jo.put(entry.getKey().toString(), "null");
+                        }
+                    }
+                }
+                return jo;
+            }
+            return value;
+        }
+    }
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -66,13 +102,14 @@ class TestApplicationTests {
         String userToJson = mapper.writeValueAsString(user);
 
         System.out.println(userToJson);
+
+        Users newUser = mapper.readValue(userToJson, Users.class);
     }
 
     @Test
     @DisplayName("JsonDiff")
-    void jsonDiff() {
+    void jsonDiff() throws JsonProcessingException, JSONException {
         Users user1 = Users.builder()
-                .userId(1L)
                 .username("윤지용")
                 .role("사원")
                 .build();
@@ -86,7 +123,7 @@ class TestApplicationTests {
         Contract originalContract = Contract.builder()
                 .id(1)
                 .status("ING")
-                .amount(123456L)
+                .amount(null)
                 .manager(user1)
 //                .createDate(LocalDate.of(2023, 1, 1))
                 .build();
@@ -97,6 +134,9 @@ class TestApplicationTests {
                 .manager(user2)
 //                .createDate(LocalDate.of(2023, 2, 5))
                 .build();
+
+        TestClass t1 = new TestClass(originalContract);
+        TestClass t2 = new TestClass(newContract);
 
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());;
         JsonNode diffNode = JsonDiff.asJson(
@@ -128,10 +168,63 @@ class TestApplicationTests {
                     System.out.println(print);
                 }
         );
-        String s = list.toString();
+//        String s = list.toString();
+//        System.out.println("===================v3=======================");
+//        System.out.println(s);
+//        System.out.println("===================v4======================");
+//        System.out.println(differenceMap.values());
+//        System.out.println("===================v5======================");
+//        System.out.println(differenceMap.keySet());
+//        System.out.println("==========================================");
+
         System.out.println("==========================================");
-        System.out.println(s);
+
+        ArrayList<String> keys = new ArrayList<>();
+        ArrayList<Object> values = new ArrayList<>();
+        difference.entriesDiffering().forEach(
+            (key, value) -> keys.add(key)
+        );
+        difference.entriesDiffering().forEach(
+            (key, value) -> values.add(value.leftValue())
+        );
+
+        System.out.println(keys);
+        System.out.println(values);
+
+        JsonConverter jsonConverter = new JsonConverter();
+        JSONObject jsonObject = jsonConverter.toJson(keys, values);
+        System.out.println(jsonObject.toString());
+
         System.out.println("==========================================");
+        System.out.println();
+
+        Map ToriginalMap = mapper.convertValue(t1, Map.class);
+        Map TnewMap = mapper.convertValue(t2, Map.class);
+
+        MapDifference<String, Object> Tdifference = Maps.difference(ToriginalMap, TnewMap);
+
+        ArrayList<String> tKeys = new ArrayList<>();
+        ArrayList<Object> tValues = new ArrayList<>();
+        Tdifference.entriesDiffering().forEach(
+            (key, value) -> tKeys.add(key)
+        );
+        Tdifference.entriesDiffering().forEach(
+            (key, value) -> tValues.add(value.leftValue())
+        );
+
+        JSONObject tJsonObject = jsonConverter.toJson(tKeys, tValues);
+        System.out.println(tJsonObject.toString());
+
+        Contract jsonContract = mapper.readValue(jsonObject.toString(), Contract.class);
+        System.out.println(jsonContract.getAmount());
+        System.out.println(jsonContract.getManager().getUuid());
+        System.out.println(jsonContract.getManager().getUsername());
+
+    }
+
+    @Test
+    @DisplayName("jsonObject TEST")
+    void jsonObjectTest() throws JsonProcessingException {
 
     }
 
