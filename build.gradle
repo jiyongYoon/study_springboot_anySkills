@@ -31,6 +31,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    annotationProcessor 'org.projectlombok:lombok'
+
     // validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
@@ -51,6 +53,8 @@ dependencies {
     //jwt
     implementation 'com.auth0:java-jwt:4.2.1'
 
+    implementation 'org.json:json:20230227'
+
     //json-diff-1
     implementation 'com.flipkart.zjsonpatch:zjsonpatch:0.4.11'
     //json-diff-2
@@ -66,8 +70,6 @@ dependencies {
 
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
-
-    annotationProcessor 'org.projectlombok:lombok'
 
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 

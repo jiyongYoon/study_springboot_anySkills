@@ -2,8 +2,10 @@ package com.example.test;
 
 import static org.slf4j.MDC.clear;
 
+import com.example.test.component.json.JsonConverter;
 import com.example.test.jsonmodel.Contract;
 import com.example.test.jsonmodel.TestClass;
+import com.example.test.model.Sports;
 import com.example.test.notification.repository.MemberRepository;
 import com.example.test.repository.SportsRepository;
 import com.example.test.repository.TeamRepository;
@@ -18,6 +20,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flipkart.zjsonpatch.JsonDiff;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
+import org.json.JSONArray;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,44 +49,6 @@ import static org.slf4j.MDC.clear;
 
 @SpringBootTest
 class TestApplicationTests {
-
-    class JsonConverter {
-        JSONObject toJson(ArrayList<String> keys, ArrayList<Object> values) throws JSONException {
-            JSONObject jsonObject = new JSONObject();
-
-            for (int i = 0; i < keys.size(); i++) {
-                String key = keys.get(i);
-                Object value = values.get(i);
-                jsonObject.put(key, toJsonValue(value));
-            }
-
-            return jsonObject;
-        }
-
-        Object toJsonValue(Object value) throws JSONException {
-            if (value == null) {
-                return "null";
-            }
-
-            if (value instanceof Map) {
-                JSONObject jo = new JSONObject();
-                Set<? extends Entry<?, ?>> entries = ((Map<?, ?>) value).entrySet();
-                for (Entry<?, ?> entry : entries) {
-                    if (entry.getValue() instanceof Map) {
-                        jo.put(entry.getKey().toString(), toJsonValue(entry.getValue()));
-                    } else {
-                        if (entry.getValue() != null) {
-                            jo.put(entry.getKey().toString(), entry.getValue());
-                        } else {
-                            jo.put(entry.getKey().toString(), "null");
-                        }
-                    }
-                }
-                return jo;
-            }
-            return value;
-        }
-    }
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -142,14 +107,14 @@ class TestApplicationTests {
                 .id(1)
                 .status("ING")
                 .amount(null)
-                .manager(user1)
+                .manager(Arrays.asList(user2, user1))
 //                .createDate(LocalDate.of(2023, 1, 1))
                 .build();
 
         Contract newContract = Contract.builder()
                 .id(1)
                 .amount(4321L)
-                .manager(user2)
+                .manager(Arrays.asList(user1, user2))
 //                .createDate(LocalDate.of(2023, 2, 5))
                 .build();
 
@@ -235,8 +200,8 @@ class TestApplicationTests {
 
         Contract jsonContract = mapper.readValue(jsonObject.toString(), Contract.class);
         System.out.println(jsonContract.getAmount());
-        System.out.println(jsonContract.getManager().getUuid());
-        System.out.println(jsonContract.getManager().getUsername());
+        System.out.println(jsonContract.getManager().get(0).getUuid());
+        System.out.println(jsonContract.getManager().get(0).getUsername());
 
     }
 

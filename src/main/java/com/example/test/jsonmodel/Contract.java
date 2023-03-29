@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ public class Contract {
     Integer id;
     String status;
     LocalDate createDate;
-    Users manager;
+    List<Users> manager;
     Long amount;
 
 }
