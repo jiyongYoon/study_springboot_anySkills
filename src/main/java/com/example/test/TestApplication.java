@@ -1,16 +1,15 @@
 package com.example.test;
 
-import com.example.test.user.entity.Users;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@EnableJpaAuditing(modifyOnCreate = true, dateTimeProviderRef = "newYorkTime", auditorAwareRef = "auditor")
 @SpringBootApplication
+@EnableJpaAuditing(modifyOnCreate = true, dateTimeProviderRef = "newYorkTime", auditorAwareRef = "auditor")
+@EnableScheduling
 public class TestApplication {
 
     @Bean

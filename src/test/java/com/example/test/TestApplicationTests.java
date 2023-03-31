@@ -1,14 +1,11 @@
 package com.example.test;
 
-import static org.slf4j.MDC.clear;
-
 import com.example.test.component.json.JsonConverter;
 import com.example.test.jsonmodel.Contract;
 import com.example.test.jsonmodel.TestClass;
 import com.example.test.model.Sports;
 import com.example.test.notification.repository.MemberRepository;
 import com.example.test.repository.SportsRepository;
-import com.example.test.repository.TeamRepository;
 import com.example.test.service.dto.SportsDto;
 import com.example.test.service.dto.mapper.SportsDtoMapper;
 import com.example.test.user.entity.Member;
@@ -20,22 +17,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flipkart.zjsonpatch.JsonDiff;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
-import org.json.JSONArray;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
-
-import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
@@ -43,6 +24,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.slf4j.MDC.clear;

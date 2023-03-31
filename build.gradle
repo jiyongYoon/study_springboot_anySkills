@@ -64,6 +64,12 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.4.1.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.1.Final'
 
+    //caching
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    // actuator
+    // org.springframework.context.ApplicationContextException: Failed to start bean 'documentationPluginsBootstrapper'; nested exception is java.lang.NullPointerException 때문에 안되고 있음...
+//    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
     compileOnly 'org.projectlombok:lombok'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

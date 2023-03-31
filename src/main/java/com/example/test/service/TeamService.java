@@ -7,11 +7,12 @@ import com.example.test.repository.TeamRepository;
 import com.example.test.service.dto.TeamDto;
 import com.example.test.service.dto.mapper.TeamDtoMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,6 +59,7 @@ public class TeamService {
     }
 
     @Transactional
+    @Cacheable(value = "team", key = "#id")
     public TeamDto getTeamFetch(Long id) {
         return TeamDto.toDto(teamRepository.findByIdFetch(id).orElseThrow(RuntimeException::new));
     }
@@ -67,6 +69,7 @@ public class TeamService {
     }
 
     @Transactional
+    @CachePut(value = "team", key = "#id")
     public TeamDto updateTeam(Long id, TeamDto team) {
         Sports findSports = sportsRepository.findById(team.getSportsDto().getSportsId())
                 .orElseThrow(RuntimeException::new);
@@ -77,6 +80,7 @@ public class TeamService {
         return TeamDto.toDto(teamRepository.save(findTeam));
     }
 
+    @CacheEvict(value = "team", key = "#id")
     public TeamDto deleteTeam(Long id) {
         Team findTeam = teamRepository.findById(id)
                 .orElseThrow(RuntimeException::new);
