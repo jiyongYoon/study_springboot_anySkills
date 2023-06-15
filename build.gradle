@@ -39,6 +39,12 @@ dependencies {
     //swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+    //swagger parser
+    implementation 'io.swagger:swagger-parser:1.0.63'
+
+    //opneapi parser
+    implementation 'com.deepoove:poi-tl:1.12.1'
+    implementation 'com.deepoove:poi-tl-plugin-highlight:1.0.0'
 
     //querydsl
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
